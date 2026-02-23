@@ -60,25 +60,29 @@ This problem is implemented using:
 
 - Python
 - PuLP
-- CBC Solver
-
-Future implementations may include:
+- OR-Tools
 - Pyomo
-- Gurobi
-- SCIP
+- CBC and GLPK solvers
+
+The structure allows easy extension to other solvers such as Gurobi or SCIP.
 
 ---
 
 ## 📂 Instances
 
-Benchmark instances are obtained from classical literature and public repositories.
+Benchmark instances are taken from the knapPI dataset proposed by David Pisinger (2005), a widely used benchmark in the literature.
 
 Each instance file contains:
-- Number of items
-- Capacity
-- Profits and weights
 
----
+- Problem size and capacity
+- Profit and weight for each item
+- A reference optimal solution
+
+| Section       | Content                                      | Description                                    |
+|---------------|----------------------------------------------|------------------------------------------------|
+| Line 1        | `n C`                                       | `n` → number of items<br>`C` → knapsack capacity |
+| Next n lines  | `profit weight`                              | Profit and weight of each item                |
+| Last line     | Binary vector                                | Known optimal solution (`0` = not selected, `1` = selected) |
 
 ## 📊 Methodology
 
