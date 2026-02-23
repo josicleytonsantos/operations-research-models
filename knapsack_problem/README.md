@@ -28,7 +28,7 @@ This problem is NP-hard and widely used as a benchmark for Integer Programming s
 
 - \( p_i \): profit of item i  
 - \( w_i \): weight of item i  
-- \( C \): knapsack capacity  
+- \( c \): knapsack capacity  
 
 ### Decision Variables
 
@@ -45,7 +45,7 @@ $$
 ### Constraints
 
 $$
-\sum_{i=1}^{n} w_i x_i \leq C
+\sum_{i=1}^{n} w_i x_i \leq c
 $$
 
 $$
