@@ -109,9 +109,13 @@ This enables reproducible computational benchmarking.
 
 knapsack/
 │
+
 ├── model.ipynb
+
 ├── instances/
+
 │ └── instance_01.txt
+
 └── README.md
 
 
