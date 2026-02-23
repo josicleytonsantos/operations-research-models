@@ -32,29 +32,23 @@ This problem is NP-hard and widely used as a benchmark for Integer Programming s
 
 ### Decision Variables
 
-\[
-x_i =
-\begin{cases}
-1 & \text{if item i is selected} \\
-0 & \text{otherwise}
-\end{cases}
-\]
+$ x_i \in \{0,1\} $
 
 ### Objective Function
 
-\[
+$$
 \max \sum_{i=1}^{n} p_i x_i
-\]
+$$
 
 ### Constraints
 
-\[
+$$
 \sum_{i=1}^{n} w_i x_i \leq C
-\]
+$$
 
-\[
+$$
 x_i \in \{0,1\}
-\]
+$$
 
 ---
 
