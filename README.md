@@ -1,5 +1,4 @@
 # operations-research-models
-Implementation and benchmarking of classical Operations Research models using exact solvers.
 
 This repository contains implementations of classical Operations Research (OR) problems solved using exact optimization methods.
 
