@@ -32,7 +32,9 @@ This problem is NP-hard and widely used as a benchmark for Integer Programming s
 
 ### Decision Variables
 
-$ x_i \in \{0,1\} $
+$$
+x_i \in \{0,1\} $
+$$
 
 ### Objective Function
 
