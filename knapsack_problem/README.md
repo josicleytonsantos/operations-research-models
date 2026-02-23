@@ -84,21 +84,27 @@ Each instance file contains:
 
 For each instance:
 
-1. Read data
-2. Build the mathematical model
-3. Solve using an exact solver
-4. Record:
-   - Objective value
-   - Execution time
-   - Solver status
-   - Optimality gap (if available)
+Each instance file follows this structure:
+
+**Line 1:**  
+`n C`  
+- `n` → number of items  
+- `C` → knapsack capacity  
+
+**Next n lines:**  
+`profit weight`  
+- Profit of item *i*  
+- Weight of item *i*  
+
+**Last line:**  
+Binary vector representing a known optimal solution (0 = not selected, 1 = selected).
 
 ---
 
 ## 📖 References
 
 - Martello, S., & Toth, P. (1990). *Knapsack Problems: Algorithms and Computer Implementations.*
-- OR-Library – Beasley (1990)
+- Pisinger, D. (2005). Instances of 0/1 Knapsack Problem.
 
 ---
 
