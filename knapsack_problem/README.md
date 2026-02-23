@@ -88,20 +88,12 @@ Each instance file contains:
 
 For each instance:
 
-Each instance file follows this structure:
+- The model is built using different frameworks
+- The solver runtime is measured
+- The objective value is recorded
+- Results are saved for comparison
 
-**Line 1:**  
-`n C`  
-- `n` → number of items  
-- `C` → knapsack capacity  
-
-**Next n lines:**  
-`profit weight`  
-- Profit of item *i*  
-- Weight of item *i*  
-
-**Last line:**  
-Binary vector representing a known optimal solution (0 = not selected, 1 = selected).
+This enables reproducible computational benchmarking.
 
 ---
 
