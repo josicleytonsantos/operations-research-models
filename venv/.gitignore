@@ -1,3 +1,4 @@
+# AFiles that should not be versioned.
 # Virtual environment
 venv/
 __pycache__/
