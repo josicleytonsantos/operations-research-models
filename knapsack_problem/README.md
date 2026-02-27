@@ -56,6 +56,7 @@ $$
 
 ## 🛠 Implementation
 
+<<<<<<< HEAD
 This benchmark compares two modeling frameworks:
 
 - **PuLP** (CBC internal solver)
@@ -102,6 +103,20 @@ Run analysis:
 python -m analysis.analyze_results
 ```
 
+=======
+This problem is implemented using:
+
+- Python
+- PuLP
+- OR-Tools
+- Pyomo
+- CBC and GLPK solvers
+
+The structure allows easy extension to other solvers such as Gurobi or SCIP.
+
+---
+
+>>>>>>> e3add80eb0d5d89a118b02b435f360582b1a5a9b
 ## 📂 Instances
 
 Benchmark instances are taken from the knapPI dataset proposed by David Pisinger (2005), a widely used benchmark in the literature.
@@ -118,6 +133,20 @@ Each instance file contains:
 | Next n lines  | `profit weight`                              | Profit and weight of each item                |
 | Last line     | Binary vector                                | Known optimal solution (`0` = not selected, `1` = selected) |
 
+<<<<<<< HEAD
+=======
+## 📊 Methodology
+
+For each instance:
+
+- The model is built using different frameworks
+- The solver runtime is measured
+- The objective value is recorded
+- Results are saved for comparison
+
+This enables reproducible computational benchmarking.
+
+>>>>>>> e3add80eb0d5d89a118b02b435f360582b1a5a9b
 ---
 
 ## 📖 References
@@ -148,6 +177,7 @@ knapsack/
 ## 🚀 Status
 
 🟡 In Progress
+<<<<<<< HEAD
 
 ---
 
@@ -156,3 +186,5 @@ knapsack/
 Josicleyton Santos  
 Production Engineer & M.Sc. in Computer Science  
 Focus: Optimization and Computational Intelligence
+=======
+>>>>>>> e3add80eb0d5d89a118b02b435f360582b1a5a9b
