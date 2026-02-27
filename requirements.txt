@@ -1,0 +1,6 @@
+pulp
+ortools
+matplotlib
+pandas
+seaborn
+scipy
