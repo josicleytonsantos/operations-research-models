@@ -1,0 +1,9 @@
+# AFiles that should not be versioned.
+# Virtual environment
+venv/
+__pycache__/
+*.pyc
+
+# OS files
+.DS_Store
+Thumbs.db
