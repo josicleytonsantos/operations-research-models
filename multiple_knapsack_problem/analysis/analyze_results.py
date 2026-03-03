@@ -1,7 +1,8 @@
 """
-Knapsack 0-1 Problem
-Benchmark using:
+Multiple Knapsack Problem (MKP)
+Benchmark Analysis
 
+Solvers evaluated:
 - PuLP (CBC internal)
 - OR-Tools (CBC backend)
 
@@ -16,6 +17,7 @@ e-mail: santos.josicleyton@gmail.com
 
 import os
 import pandas as pd
+import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
 from scipy.stats import friedmanchisquare, wilcoxon
@@ -37,50 +39,79 @@ os.makedirs(RESULTS_DIR, exist_ok=True)
 # ==========================================================
 
 df = pd.read_csv(RESULTS_FILE)
+
+# Remove runs that crashed
 df = df.dropna(subset=["runtime"])
 
 # ==========================================================
-# SAVE PERFORMANCE STATISTICS
+# ADD RELATIVE GAP (BEST PER INSTANCE)
+# ==========================================================
+
+best_per_instance = df.groupby("instance")["objective"].max()
+
+df["best_known"] = df["instance"].map(best_per_instance)
+
+df["relative_gap"] = (
+    (df["best_known"] - df["objective"]) /
+    df["best_known"]
+)
+
+# ==========================================================
+# PERFORMANCE STATISTICS
 # ==========================================================
 
 stats_table = df.groupby("solver").agg(
     mean_runtime=("runtime", "mean"),
     median_runtime=("runtime", "median"),
     std_runtime=("runtime", "std"),
-    success_rate=("found_optimal", "mean")
+    mean_objective=("objective", "mean"),
+    median_objective=("objective", "median"),
+    mean_gap=("gap", "mean"),
+    median_gap=("gap", "median"),
+    mean_relative_gap=("relative_gap", "mean"),
+    optimal_rate=("status", lambda x: (x == "Optimal").mean()),
+    timeout_rate=("status", lambda x: (x == "Not Solved").mean())
 )
 
-stats_table["success_rate"] *= 100
-
-stats_table.to_csv(os.path.join(RESULTS_DIR, "performance_statistics.csv"))
+stats_table.to_csv(
+    os.path.join(RESULTS_DIR, "performance_statistics.csv")
+)
 
 # ==========================================================
-# SAVE BOXPLOT
+# RUNTIME BOXPLOT
 # ==========================================================
 
 plt.figure(figsize=(8, 5))
 sns.boxplot(data=df, x="solver", y="runtime")
-plt.title("Runtime Distribution per Solver")
+plt.title("Runtime Distribution per Solver (MKP)")
 plt.tight_layout()
 plt.savefig(os.path.join(RESULTS_DIR, "runtime_boxplot.png"))
 plt.close()
 
 # ==========================================================
-# SAVE SUCCESS RATE PLOT
+# OBJECTIVE BOXPLOT
 # ==========================================================
 
-success_rates = df.groupby("solver")["found_optimal"].mean() * 100
-
 plt.figure(figsize=(8, 5))
-success_rates.plot(kind="bar")
-plt.ylabel("Success Rate (%)")
-plt.title("Optimal Solution Detection Rate")
+sns.boxplot(data=df, x="solver", y="objective")
+plt.title("Objective Value Distribution per Solver (MKP)")
 plt.tight_layout()
-plt.savefig(os.path.join(RESULTS_DIR, "success_rate.png"))
+plt.savefig(os.path.join(RESULTS_DIR, "objective_boxplot.png"))
 plt.close()
 
 # ==========================================================
-# STATISTICAL TEST
+# GAP BOXPLOT
+# ==========================================================
+
+plt.figure(figsize=(8, 5))
+sns.boxplot(data=df, x="solver", y="relative_gap")
+plt.title("Relative Gap Distribution per Solver (MKP)")
+plt.tight_layout()
+plt.savefig(os.path.join(RESULTS_DIR, "gap_boxplot.png"))
+plt.close()
+
+# ==========================================================
+# STATISTICAL TEST (RUNTIME)
 # ==========================================================
 
 pivot_runtime = df.pivot(
@@ -99,7 +130,7 @@ with open(test_output_path, "w") as f:
         statistic, p_value = friedmanchisquare(
             *[pivot_runtime[col] for col in pivot_runtime.columns]
         )
-        f.write("Friedman Test\n")
+        f.write("Friedman Test (Runtime)\n")
         f.write(f"Statistic: {statistic}\n")
         f.write(f"P-value: {p_value}\n")
 
@@ -109,10 +140,12 @@ with open(test_output_path, "w") as f:
             pivot_runtime[col1],
             pivot_runtime[col2]
         )
-        f.write("Wilcoxon Signed-Rank Test\n")
+        f.write("Wilcoxon Signed-Rank Test (Runtime)\n")
         f.write(f"Comparing: {col1} vs {col2}\n")
         f.write(f"Statistic: {stat}\n")
         f.write(f"P-value: {p_value}\n")
 
     else:
         f.write("Not enough solvers for statistical testing.\n")
+
+print("Analysis completed successfully.")

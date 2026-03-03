@@ -8,6 +8,7 @@ Solvers evaluated:
 
 Author: Josicleyton Santos
 Repository: https://github.com/josicleytonsantos/operations-research-models
+e-mail: santos.josicleyton@gmail.com
 """
 
 # ==========================================================
