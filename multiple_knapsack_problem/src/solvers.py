@@ -24,7 +24,7 @@ from pulp import (
 )
 from ortools.linear_solver import pywraplp
 
-TIME_LIMIT = 60  # seconds
+TIME_LIMIT = 300  # seconds
 
 # ==========================================================
 # INSTANCE READER
