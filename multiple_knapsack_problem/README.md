@@ -38,39 +38,39 @@ The MKP is NP-hard and widely used as a benchmark for Mixed Integer Programming 
 
 ### Decision Variables
 
-\[
+$$
 x_{ij} \in \{0,1\}
-\]
+$$
 
 Where:
 
-- \(x_{ij} = 1\) if item \(j\) is assigned to knapsack \(i\)
+- $$\(x_{ij} = 1\) if item \(j\) is assigned to knapsack \(i\)$$
 
 ### Objective Function
 
-\[
+$$
 \max \sum_{i=1}^{m}\sum_{j=1}^{n} p_j x_{ij}
-\]
+$$
 
 ### Constraints
 
 **Knapsack capacity constraints**
 
-\[
+$$
 \sum_{j=1}^{n} w_j x_{ij} \leq c_i \quad \forall i
-\]
+$$
 
 **Each item assigned at most once**
 
-\[
+$$
 \sum_{i=1}^{m} x_{ij} \leq 1 \quad \forall j
-\]
+$$
 
 **Binary variables**
 
-\[
+$$
 x_{ij} \in \{0,1\}
-\]
+$$
 
 ---
 

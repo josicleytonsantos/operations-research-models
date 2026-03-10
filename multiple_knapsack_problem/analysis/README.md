@@ -86,8 +86,6 @@ This plot shows the distribution of the **relative optimality gap** achieved by 
 - Both solvers achieve very small gaps.
 - Most runs are close to optimal.
 
-![Relative Gap Distribution](gap_boxplot.png)
-
 ---
 
 ## Objective Value Distribution
@@ -97,8 +95,6 @@ This boxplot compares the **objective values obtained by each solver**.
 - Both solvers produce very similar objective values.
 - This indicates consistent solution quality.
 
-![Objective Distribution](objective_boxplot.png)
-
 ---
 
 ## Runtime Distribution
@@ -107,8 +103,6 @@ This plot compares the **runtime distributions** of the solvers.
 
 - Large variance appears due to difficult instances.
 - Some runs reach the time limit.
-
-![Runtime Distribution](runtime_boxplot.png)
 
 ---
 
