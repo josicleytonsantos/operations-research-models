@@ -128,7 +128,7 @@ pip install -r requirements.txt
 Run experiments:
 
 ```bash
-cd multiple_knapsack_problem
+cd travelling_salesman_problem
 python -m src.run_experiments
 ```
 
