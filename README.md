@@ -64,21 +64,6 @@ Academic references are included inside each problem folder.
 
 ---
 
-## 🚀 Project Structure
-
-
-operations-research-models/
-│
-├── knapsack/
-│ ├── model.ipynb
-│ ├── instances/
-│ └── README.md
-│
-└── README.md
-
-
----
-
 ## 👨‍💻 Author
 
 Josicleyton Santos  
