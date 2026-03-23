@@ -1,4 +1,4 @@
-Wilcoxon Signed-Rank Test
+Wilcoxon Signed-Rank Test (Runtime)
 Comparing: OR-Tools vs PuLP
 Statistic: 0.0
 P-value: 9.5367431640625e-07

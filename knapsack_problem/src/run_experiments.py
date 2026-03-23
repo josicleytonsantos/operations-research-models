@@ -11,6 +11,7 @@ Repository: https://github.com/josicleytonsantos/operations-research-models
 e-mail: santos.josicleyton@gmail.com
 """
 
+
 # ==========================================================
 # IMPORTS
 # ==========================================================
@@ -30,8 +31,10 @@ from .solvers import (
 BASE_PATH = os.path.dirname(os.path.dirname(__file__))
 INSTANCES_PATH = os.path.join(BASE_PATH, "instances")
 RESULTS_PATH = os.path.join(BASE_PATH, "results")
+SOLUTIONS_PATH = os.path.join(RESULTS_PATH, "solutions")
 
 os.makedirs(RESULTS_PATH, exist_ok=True)
+os.makedirs(SOLUTIONS_PATH, exist_ok=True)
 
 OUTPUT_FILE = os.path.join(RESULTS_PATH, "experiment_results.csv")
 
@@ -75,6 +78,40 @@ def run_experiments():
                     n, capacity, profits, weights
                 )
 
+                # ==================================================
+                # GAP (AGORA CORRETO)
+                # ==================================================
+                gap = (
+                    None if objective is None
+                    else known_optimal - objective
+                )
+
+                # ==================================================
+                # SAVE SOLUTION TO FILE
+                # ==================================================
+                solution_filename = f"{instance_name}_{solver_name}.txt"
+                solution_path = os.path.join(SOLUTIONS_PATH, solution_filename)
+
+                with open(solution_path, "w") as f:
+                    f.write(f"Instance: {instance_name}\n")
+                    f.write(f"Solver: {solver_name}\n")
+                    f.write(f"Status: {status}\n")
+                    f.write(f"Objective: {objective}\n")
+                    f.write(f"Known optimal: {known_optimal}\n")
+                    f.write(f"Gap: {gap}\n")
+                    f.write(f"Runtime: {runtime}\n\n")
+
+                    f.write("Solution (x[i]):\n")
+
+                    if solution is not None:
+                        for i, val in enumerate(solution):
+                            f.write(f"x[{i}] = {val}\n")
+                    else:
+                        f.write("No solution found.\n")
+
+                # ==================================================
+                # SAVE RESULTS
+                # ==================================================
                 results.append({
                     "instance": instance_name,
                     "solver": solver_name,
@@ -82,11 +119,8 @@ def run_experiments():
                     "capacity": capacity,
                     "objective": objective,
                     "known_optimal": known_optimal,
-                    "optimality_gap": (
-                        0 if objective is None
-                        else known_optimal - objective
-                    ),
-                    "found_optimal": int(objective == known_optimal),
+                    "gap": gap,
+                    "found_optimal": int(objective == known_optimal) if objective is not None else 0,
                     "runtime": runtime,
                     "status": status
                 })
@@ -100,7 +134,7 @@ def run_experiments():
                     "capacity": capacity,
                     "objective": None,
                     "known_optimal": known_optimal,
-                    "optimality_gap": None,
+                    "gap": None,
                     "found_optimal": 0,
                     "runtime": None,
                     "status": f"Error: {str(e)}"
