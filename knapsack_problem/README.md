@@ -127,24 +127,6 @@ Each instance file contains:
 
 ---
 
-## 📎 Folder Structure
-
-
-knapsack/
-
-│
-
-├── model.ipynb
-
-├── instances/
-
-│ └── instance_01.txt
-
-└── README.md
-
-
----
-
 ## 🚀 Status
 
 🟡 In Progress
