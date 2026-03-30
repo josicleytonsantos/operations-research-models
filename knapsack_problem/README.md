@@ -127,12 +127,6 @@ Each instance file contains:
 
 ---
 
-## 🚀 Status
-
-🟡 In Progress
-
----
-
 ## 👨‍💻 Author
 
 Josicleyton Santos  

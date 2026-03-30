@@ -1,138 +1,161 @@
-# Analysis of Multiple Knapsack Problem Experiments
+# Multiple Knapsack Problem — Solver Benchmark
 
-This directory contains the analysis of computational experiments for the **Multiple Knapsack Problem (MKP)**.  
-The experiments compare two optimization approaches implemented in the project:
+This experiment compares the performance of two optimization frameworks applied to the **Multiple Knapsack Problem (MKP)**:
 
-- **PuLP** (Python linear programming modeling library)
-- **OR-Tools** (Google optimization toolkit)
+* PuLP (using CBC internally)
+* OR-Tools (using CBC backend)
 
-The experiments were conducted using benchmark instances from the dataset associated with the manuscript:
+The benchmark uses instances derived from the MKP dataset with different configurations of:
 
-> Dell'Amico, M., Delorme, M., Iori, M., & Martello, S.  
-> *Mathematical models and decomposition methods for the multiple knapsack problem.*  
-> Operations Research, 2018.
+* Number of knapsacks
+* Number of items
+* Instance types (uncorrelated, weakly correlated, strongly correlated)
 
-A **time limit of 300 seconds** was imposed for each solver run.
+The analysis evaluates:
 
----
-
-# Files
-
-## `experiment_results.csv`
-
-This file contains the **raw results of each solver execution** on each MKP instance.
-
-Each row corresponds to a single solver run.
-
-### Columns
-
-| Column | Description |
-|------|-------------|
-| instance | Instance file name |
-| solver | Solver used (PuLP or OR-Tools) |
-| m_knapsacks | Number of knapsacks |
-| n_items | Number of items |
-| objective | Objective function value obtained |
-| runtime | Solver runtime in seconds |
-| status | Solver status (Optimal or Feasible) |
-| gap | Reported optimality gap |
+* Runtime performance
+* Solution quality
+* Optimality gap
+* Optimal solution detection rate
+* Statistical significance
 
 ---
 
-## `performance_statistics.csv`
+# Benchmark Results Analysis
 
-This file summarizes **aggregate statistics per solver**.
+## Solver Performance Comparison
 
-### Metrics
+A total of 90 instances were evaluated for each solver.
 
-| Metric | Description |
-|------|-------------|
-| mean_runtime | Average runtime across all instances |
-| median_runtime | Median runtime |
-| std_runtime | Standard deviation of runtime |
-| mean_objective | Average objective value |
-| median_objective | Median objective value |
-| mean_relative_gap | Average relative optimality gap |
-| optimal_rate | Percentage of runs that reached optimality |
-| timeout_rate | Percentage of runs that reached the time limit |
+The experiments show that both solvers are highly reliable for solving MKP instances, consistently reaching optimal solutions. However, some differences appear in runtime behavior, especially in larger instances.
 
 ---
 
-## `statistical_test.txt`
+# Runtime Performance
 
-Contains the **statistical comparison between solvers** using a non-parametric hypothesis test.
+The runtime distribution reveals that most instances are solved very quickly by both solvers, but a few large instances significantly increase the average runtime.
 
-### Wilcoxon Signed-Rank Test
+![Runtime Distribution](sandbox:/mnt/data/runtime_boxplot.png)
 
-The **Wilcoxon signed-rank test** was used to compare the runtime distributions of the two solvers.
+### Average Runtime
 
-Results:
+| Solver   | Mean Runtime (s) | Median Runtime (s) | Std Runtime |
+| -------- | ---------------- | ------------------ | ----------- |
+| OR-Tools | 8.10             | 0.086              | 30.59       |
+| PuLP     | 6.74             | 0.170              | 27.25       |
 
-- **Statistic:** 5413.0  
-- **P-value:** 9.515e-05
+Key observations:
 
-Since the p-value is much smaller than 0.05, the null hypothesis that both solvers have equal runtime distributions can be rejected, indicating a statistically significant difference in runtime performance.
+* PuLP shows a lower mean runtime, mainly due to fewer extreme runtime outliers.
+* OR-Tools has a smaller median runtime, indicating faster performance for the majority of instances.
+* Large-scale problems (especially with 40 items and 20 knapsacks) produced the highest runtimes for both solvers.
+* Runtime variability is significant due to a few computationally expensive instances.
 
----
-
-# Generated Visualizations
-
-The following plots summarize the experimental results.
-
-## Relative Gap Distribution
-
-This plot shows the distribution of the **relative optimality gap** achieved by each solver.
-
-- Both solvers achieve very small gaps.
-- Most runs are close to optimal.
+This behavior is clearly visible in the runtime boxplot, where most solutions cluster near zero runtime while a few outliers reach over 200 seconds.
 
 ---
 
-## Objective Value Distribution
+## Statistical Test
 
-This boxplot compares the **objective values obtained by each solver**.
+A Wilcoxon Signed-Rank Test was applied to compare solver runtimes.
 
-- Both solvers produce very similar objective values.
-- This indicates consistent solution quality.
+**Result**
 
----
+Test: Wilcoxon Signed-Rank
+Statistic: 1182.0
+P-value: 0.0004967503163557723
 
-## Runtime Distribution
-
-This plot compares the **runtime distributions** of the solvers.
-
-- Large variance appears due to difficult instances.
-- Some runs reach the time limit.
+The result indicates that the runtime difference between the solvers is statistically significant.
 
 ---
 
-# Summary
+# Solution Quality
 
-The experiments indicate that:
+Both solvers produced exactly the same objective values across all instances.
 
-- **Both solvers produce similar objective values**, indicating comparable solution quality.
-- **PuLP achieved a higher optimality rate** across the tested instances.
-- **OR-Tools often finds high-quality feasible solutions faster**, especially for smaller instances.
-- The **Wilcoxon statistical test confirms a significant difference in runtime behavior**.
+| Solver   | Mean Objective | Median Objective |
+| -------- | -------------- | ---------------- |
+| OR-Tools | 9,339.09       | 7,619.5          |
+| PuLP     | 9,339.09       | 7,619.5          |
 
-Overall, both tools are suitable for solving MKP instances, but they exhibit different performance characteristics depending on instance size and difficulty.
+This confirms that both frameworks are equally effective in identifying optimal solutions for the tested MKP instances.
+
+The objective value distribution reflects the diversity of the problem instances rather than solver differences.
+
+---
+
+# Optimality Gap Analysis
+
+No optimality gap was observed during the experiments.
+
+| Solver   | Mean Gap | Median Gap | Mean Relative Gap |
+| -------- | -------- | ---------- | ----------------- |
+| OR-Tools | 0.0      | 0.0        | 0.0               |
+| PuLP     | 0.0      | 0.0        | 0.0               |
+
+Both solvers consistently reached the optimal solution for every tested instance.
+
+This indicates that:
+
+* The MKP instances are solvable with high reliability using CBC-based solvers.
+* There is no loss in solution quality between the two frameworks.
 
 ---
 
-# Reproducibility
+# Optimal Solution Detection Rate
 
-To reproduce the analysis:
+| Solver   | Optimal Solutions |
+| -------- | ----------------- |
+| PuLP     | 100%              |
+| OR-Tools | 100%              |
 
-1. Run the experiment scripts in the main project directory.
-2. Collect the results in `experiment_results.csv`.
-3. Execute the analysis scripts to generate statistics and plots.
+Additionally:
 
-Required Python libraries:
-
-pandas
-numpy
-matplotlib
-seaborn
-scipy
+* No timeouts occurred during the experiments.
+* All instances were successfully solved within the computational limits.
 
 ---
+
+# Key Observations
+
+### OR-Tools
+
+* Lower median runtime
+* Faster for most small and medium instances
+* Slightly higher runtime variability due to a few large outliers
+* Highly efficient CBC integration
+
+### PuLP
+
+* Lower mean runtime overall
+* More stable performance across larger instances
+* Similar performance in small instances
+* Identical solution quality
+
+---
+
+# Conclusion
+
+The benchmark shows that both solvers perform extremely well for the Multiple Knapsack Problem.
+
+| Scenario                        | Recommended Solver |
+| ------------------------------- | ------------------ |
+| Faster typical runtime          | OR-Tools           |
+| More stable average performance | PuLP               |
+| Guaranteed optimal solution     | Both               |
+
+Overall:
+
+* Both solvers achieved 100% optimal solutions.
+* Runtime differences exist but are relatively small for most instances.
+* Performance divergence mainly appears in larger MKP configurations.
+
+This suggests that either solver can be reliably used for MKP research and benchmarking, with the choice depending mainly on runtime preference and workflow integration.
+
+---
+
+## 👨‍💻 Author
+
+Josicleyton Santos
+Production Engineer & M.Sc. in Computer Science
+Focus: Optimization and Computational Intelligence

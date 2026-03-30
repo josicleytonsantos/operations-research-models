@@ -1,0 +1,22 @@
+Instance: probT1_1W_R50_T002_M010_N0020_seed03.txt
+Solver: PuLP
+Status: Optimal
+Objective: 4872.0
+Gap: None
+Runtime: 0.06678080558776855
+
+Solution:
+x[0,16] = 1
+x[1,18] = 1
+x[2,3] = 1
+x[3,0] = 1
+x[3,4] = 1
+x[3,10] = 1
+x[4,6] = 1
+x[4,15] = 1
+x[5,11] = 1
+x[5,14] = 1
+x[6,8] = 1
+x[6,13] = 1
+x[7,9] = 1
+x[8,12] = 1

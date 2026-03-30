@@ -24,8 +24,6 @@ from pulp import (
 )
 from ortools.linear_solver import pywraplp
 
-TIME_LIMIT = 300  # seconds
-
 # ==========================================================
 # INSTANCE READER
 # ==========================================================
@@ -94,25 +92,23 @@ def solve_with_pulp(m, n, capacities, weights, profits):
             x[i, j] for i in range(m)
         ) <= 1
 
-    solver = PULP_CBC_CMD(
-        timeLimit=TIME_LIMIT,
-        msg=False
-    )
-
     start = time.time()
-    model.solve(solver)
+    model.solve(PULP_CBC_CMD(msg=False))
     runtime = time.time() - start
 
     objective = value(model.objective)
     status = LpStatus[model.status]
 
-    gap = None
-    try:
-        gap = solver.solutionGap
-    except:
-        pass
+    solution = [
+        (i, j)
+        for i in range(m)
+        for j in range(n)
+        if x[i, j].value() is not None and int(x[i, j].value()) == 1
+    ]
 
-    return objective, runtime, status, gap
+    gap = None
+
+    return solution, objective, runtime, status, gap
 
 
 # ==========================================================
@@ -122,7 +118,6 @@ def solve_with_pulp(m, n, capacities, weights, profits):
 def solve_with_ortools(m, n, capacities, weights, profits):
 
     solver = pywraplp.Solver.CreateSolver("CBC")
-    solver.SetTimeLimit(TIME_LIMIT * 1000)
 
     x = {}
     for i in range(m):
@@ -164,10 +159,13 @@ def solve_with_ortools(m, n, capacities, weights, profits):
 
     status = status_map.get(status_code, "Unknown")
 
-    gap = None
-    try:
-        gap = solver.MipGap()
-    except:
-        pass
+    solution = [
+        (i, j)
+        for i in range(m)
+        for j in range(n)
+        if x[i, j].solution_value() > 0.5
+    ]
 
-    return objective, runtime, status, gap
+    gap = None
+
+    return solution, objective, runtime, status, gap

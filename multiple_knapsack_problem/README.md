@@ -172,12 +172,6 @@ Each instance file follows the format:
 
 ---
 
-## 🚀 Status
-
-🟡 In Progress
-
----
-
 ## 👨‍💻 Author
 
 Josicleyton Santos  

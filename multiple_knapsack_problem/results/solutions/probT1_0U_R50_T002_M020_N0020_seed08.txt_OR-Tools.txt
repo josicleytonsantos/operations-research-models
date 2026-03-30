@@ -1,0 +1,18 @@
+Instance: probT1_0U_R50_T002_M020_N0020_seed08.txt
+Solver: OR-Tools
+Status: Optimal
+Objective: 3675.0
+Gap: None
+Runtime: 0.021699190139770508
+
+Solution:
+x[0,11] = 1
+x[1,1] = 1
+x[1,2] = 1
+x[2,16] = 1
+x[3,8] = 1
+x[5,0] = 1
+x[6,3] = 1
+x[7,10] = 1
+x[8,12] = 1
+x[8,17] = 1
