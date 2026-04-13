@@ -32,8 +32,10 @@ BASE_PATH = os.path.dirname(os.path.dirname(__file__))
 
 INSTANCES_PATH = os.path.join(BASE_PATH, "instances")
 RESULTS_PATH = os.path.join(BASE_PATH, "results")
+SOLUTIONS_PATH = os.path.join(RESULTS_PATH, "solutions")
 
 os.makedirs(RESULTS_PATH, exist_ok=True)
+os.makedirs(SOLUTIONS_PATH, exist_ok=True)
 
 OUTPUT_FILE = os.path.join(RESULTS_PATH, "experiment_results.csv")
 
@@ -47,7 +49,7 @@ SOLVERS = {
 }
 
 # ==========================================================
-# MAIN EXPERIMENT LOOP
+# MAIN
 # ==========================================================
 
 def run_experiments():
@@ -66,26 +68,49 @@ def run_experiments():
 
         instance_path = os.path.join(INSTANCES_PATH, instance_name)
 
-        # Read TSP instance
         n, dist = read_tsp_instance(instance_path)
 
         for solver_name, solver_function in SOLVERS.items():
 
             try:
 
-                objective, runtime, status, gap = solver_function(
-                    n,
-                    dist
+                route, objective, runtime, status, gap = solver_function(
+                    n, dist
                 )
 
+                # ==========================================
+                # SAVE SOLUTION
+                # ==========================================
+                solution_filename = f"{instance_name}_{solver_name}.txt"
+                solution_path = os.path.join(SOLUTIONS_PATH, solution_filename)
+
+                with open(solution_path, "w") as f:
+                    f.write(f"Instance: {instance_name}\n")
+                    f.write(f"Solver: {solver_name}\n")
+                    f.write(f"Status: {status}\n")
+                    f.write(f"Objective: {objective}\n")
+                    f.write(f"Gap: {gap}\n")
+                    f.write(f"Runtime: {runtime}\n\n")
+
+                    f.write("Route:\n")
+
+                    if route:
+                        for i, j in route:
+                            f.write(f"{i} -> {j}\n")
+                    else:
+                        f.write("No route found.\n")
+
+                # ==========================================
+                # SAVE RESULTS
+                # ==========================================
                 results.append({
                     "instance": instance_name,
                     "solver": solver_name,
                     "n_nodes": n,
                     "objective": objective,
+                    "gap": gap,
                     "runtime": runtime,
-                    "status": status,
-                    "gap": gap
+                    "status": status
                 })
 
             except Exception as e:
@@ -95,29 +120,17 @@ def run_experiments():
                     "solver": solver_name,
                     "n_nodes": n,
                     "objective": None,
+                    "gap": None,
                     "runtime": None,
-                    "status": f"Error: {str(e)}",
-                    "gap": None
+                    "status": f"Error: {str(e)}"
                 })
 
-    # ======================================================
-    # SAVE RESULTS
-    # ======================================================
-
     df_results = pd.DataFrame(results)
-
-    df_results.to_csv(
-        OUTPUT_FILE,
-        index=False
-    )
+    df_results.to_csv(OUTPUT_FILE, index=False)
 
     print("\nExperiment completed successfully.")
     print(f"Results saved to: {OUTPUT_FILE}")
 
-
-# ==========================================================
-# ENTRY POINT
-# ==========================================================
 
 if __name__ == "__main__":
     run_experiments()

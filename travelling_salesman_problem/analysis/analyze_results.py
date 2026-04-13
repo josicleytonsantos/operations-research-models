@@ -1,16 +1,3 @@
-"""
-Travelling Salesman Problem (TSP)
-Benchmark Analysis
-
-Solvers evaluated:
-- PuLP (CBC internal)
-- OR-Tools (CBC backend)
-
-Author: Josicleyton Santos
-Repository: https://github.com/josicleytonsantos/operations-research-models/
-e-mail: santos.josicleyton@gmail.com
-"""
-
 # ==========================================================
 # IMPORTS
 # ==========================================================
@@ -43,16 +30,23 @@ df = pd.read_csv(RESULTS_FILE)
 # Remove runs that crashed
 df = df.dropna(subset=["runtime"])
 
+# Garantir consistência no gap
+if "gap" not in df.columns:
+    df["gap"] = 0
+
+df["gap"] = df["gap"].fillna(0)
+
 # ==========================================================
 # ADD RELATIVE GAP (BEST PER INSTANCE)
 # ==========================================================
 
-best_per_instance = df.groupby("instance")["objective"].max()
+# Para TSP (minimização), o melhor é o MENOR valor
+best_per_instance = df.groupby("instance")["objective"].min()
 
 df["best_known"] = df["instance"].map(best_per_instance)
 
 df["relative_gap"] = (
-    (df["best_known"] - df["objective"]) /
+    (df["objective"] - df["best_known"]) /
     df["best_known"]
 )
 
@@ -83,7 +77,7 @@ stats_table.to_csv(
 
 plt.figure(figsize=(8, 5))
 sns.boxplot(data=df, x="solver", y="runtime")
-plt.title("Runtime Distribution per Solver (MKP)")
+plt.title("Runtime Distribution per Solver (TSP)")
 plt.tight_layout()
 plt.savefig(os.path.join(RESULTS_DIR, "runtime_boxplot.png"))
 plt.close()
@@ -94,7 +88,7 @@ plt.close()
 
 plt.figure(figsize=(8, 5))
 sns.boxplot(data=df, x="solver", y="objective")
-plt.title("Objective Value Distribution per Solver (MKP)")
+plt.title("Objective Value Distribution per Solver (TSP)")
 plt.tight_layout()
 plt.savefig(os.path.join(RESULTS_DIR, "objective_boxplot.png"))
 plt.close()
@@ -105,7 +99,7 @@ plt.close()
 
 plt.figure(figsize=(8, 5))
 sns.boxplot(data=df, x="solver", y="relative_gap")
-plt.title("Relative Gap Distribution per Solver (MKP)")
+plt.title("Relative Gap Distribution per Solver (TSP)")
 plt.tight_layout()
 plt.savefig(os.path.join(RESULTS_DIR, "gap_boxplot.png"))
 plt.close()

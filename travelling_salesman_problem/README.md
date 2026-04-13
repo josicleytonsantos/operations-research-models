@@ -1,25 +1,21 @@
-# Multiple Knapsack Problem (MKP)
+# Traveling Salesman Problem (TSP)
 
 ## 📌 Problem Description
 
-The Multiple Knapsack Problem (MKP) is a classical combinatorial optimization problem and a generalization of the 0-1 Knapsack Problem.
+The Traveling Salesman Problem (TSP) is one of the most studied combinatorial optimization problems.
 
 Given:
 
-- A set of items
-- Each item has a profit (value)
-- Each item has a weight
-- Multiple knapsacks with limited capacities
+* A set of cities (nodes)
+* The distance between each pair of cities
 
-The objective is to assign items to knapsacks such that:
+The objective is to determine a tour such that:
 
-- Each item can be assigned to at most one knapsack
-- The capacity of each knapsack cannot be exceeded
-- The total profit is maximized
+* Each city is visited exactly once
+* The tour returns to the starting city
+* The total travel distance is minimized
 
-Each item may either be assigned to a knapsack or left unused.
-
-The MKP is NP-hard and widely used as a benchmark for Mixed Integer Programming (MILP) solvers.
+The TSP is NP-hard and serves as a fundamental benchmark for optimization algorithms and Mixed Integer Programming (MILP) solvers.
 
 ---
 
@@ -27,49 +23,64 @@ The MKP is NP-hard and widely used as a benchmark for Mixed Integer Programming 
 
 ### Sets
 
-- \( i = 1, ..., m \) knapsacks  
-- \( j = 1, ..., n \) items  
+* ( i, j = 1, ..., n ) cities
 
 ### Parameters
 
-- \( p_j \): profit of item \(j\)  
-- \( w_j \): weight of item \(j\)  
-- \( c_i \): capacity of knapsack \(i\)
+* ( d_{ij} ): distance from city (i) to city (j)
 
 ### Decision Variables
 
 $$
-x_{ij} \in \{0,1\}
+x_{ij} \in {0,1}
 $$
 
 Where:
 
-- \(x_{ij} = 1\) if item \(j\) is assigned to knapsack \(i\)
+* (x_{ij} = 1) if the tour goes directly from city (i) to city (j)
+
+### Auxiliary Variables (MTZ formulation)
+
+$$
+u_i \in \mathbb{R}
+$$
+
+Used to eliminate subtours.
+
+---
 
 ### Objective Function
 
 $$
-\max \sum_{i=1}^{m}\sum_{j=1}^{n} p_j x_{ij}
+\min \sum_{i=1}^{n} \sum_{j=1}^{n} d_{ij} x_{ij}
 $$
+
+---
 
 ### Constraints
 
-**Knapsack capacity constraints**
+**Each city has exactly one outgoing edge**
 
 $$
-\sum_{j=1}^{n} w_j x_{ij} \leq c_i \quad \forall i
+\sum_{j=1, j \neq i}^{n} x_{ij} = 1 \quad \forall i
 $$
 
-**Each item assigned at most once**
+**Each city has exactly one incoming edge**
 
 $$
-\sum_{i=1}^{m} x_{ij} \leq 1 \quad \forall j
+\sum_{i=1, i \neq j}^{n} x_{ij} = 1 \quad \forall j
+$$
+
+**Subtour elimination (MTZ constraints)**
+
+$$
+u_i - u_j + n x_{ij} \leq n - 1 \quad \forall i \neq j, ; i,j \geq 2
 $$
 
 **Binary variables**
 
 $$
-x_{ij} \in \{0,1\}
+x_{ij} \in {0,1}
 $$
 
 ---
@@ -78,12 +89,12 @@ $$
 
 This benchmark compares two modeling frameworks:
 
-- **PuLP** (CBC internal solver)
-- **OR-Tools** (CBC backend)
+* **PuLP** (CBC internal solver)
+* **OR-Tools** (CBC backend)
 
-Both implementations solve the MKP using Mixed Integer Linear Programming (MILP).
+Both implementations solve the TSP using a Mixed Integer Linear Programming (MILP) formulation based on the **Miller-Tucker-Zemlin (MTZ)** subtour elimination approach.
 
-A **time limit of 120 seconds** is imposed for each run for testing purposes.
+⚠️ **No time limit is imposed** — solvers run until optimality is reached or infeasibility is proven.
 
 ---
 
@@ -106,14 +117,19 @@ results/experiment_results.csv
 
 The file contains:
 
-- instance name
-- solver used
-- number of knapsacks
-- number of items
-- objective value
-- runtime
-- solver status
-- MIP gap
+* instance name
+* solver used
+* number of nodes
+* objective value
+* runtime
+* solver status
+* MIP gap
+
+Additionally, individual solutions (routes) are stored in:
+
+```
+results/solutions/
+```
 
 ---
 
@@ -142,33 +158,39 @@ python -m analysis.analyze_results
 
 ## 📂 Instances
 
-The instances included in this repository are derived from the benchmark set associated with the manuscript:
-
-**Dell'Amico, M., Delorme, M., Iori, M., & Martello, S. (2018)**  
-*Mathematical models and decomposition methods for the multiple knapsack problem.*
-
-These instances were used in the **computational experiments section of the paper**.
+The instances used in this repository follow a standard coordinate-based format, commonly used in TSP benchmarks.
 
 ### Instance Format
 
 Each instance file follows the format:
 
-| Section | Content | Description |
-|-------|--------|-------------|
-| Line 1 | `m` | Number of knapsacks |
-| Line 2 | `n` | Number of items |
-| Next m lines | `ci` | Capacity of knapsack i |
-| Next n lines | `wj pj` | Weight and profit of item j |
+| Section   | Content   | Description                    |
+| --------- | --------- | ------------------------------ |
+| Each line | `i xi yi` | Node index and its coordinates |
+
+Where:
+
+* `i`: node identifier
+* `xi`, `yi`: Cartesian coordinates of node (i)
+
+The distance matrix is computed using the Euclidean distance:
+
+$$
+d_{ij} = \sqrt{(x_i - x_j)^2 + (y_i - y_j)^2}
+$$
 
 ---
 
 ## 📖 References
 
-- Dell'Amico, M., Delorme, M., Iori, M., & Martello, S. (2018).  
-  *Mathematical models and decomposition methods for the multiple knapsack problem.*
+* Miller, C. E., Tucker, A. W., & Zemlin, R. A. (1960).
+  *Integer Programming Formulation of Traveling Salesman Problems.*
 
-- Martello, S., & Toth, P. (1990).  
-  *Knapsack Problems: Algorithms and Computer Implementations.*
+* Applegate, D., Bixby, R., Chvátal, V., & Cook, W. (2006).
+  *The Traveling Salesman Problem: A Computational Study.*
+
+* Reinelt, G. (1991).
+  *TSPLIB — A Traveling Salesman Problem Library.*
 
 ---
 
@@ -180,6 +202,12 @@ Each instance file follows the format:
 
 ## 👨‍💻 Author
 
-Josicleyton Santos  
-Production Engineer & M.Sc. in Computer Science  
+Josicleyton Santos
+Production Engineer & M.Sc. in Computer Science
 Focus: Optimization and Computational Intelligence
+
+---
+
+Se quiser, posso no próximo passo:
+
+👉 padronizar TODOS os READMEs do seu repositório (Knapsack, MKP, TSP) num nível de portfólio profissional forte / GitHub destaque.
