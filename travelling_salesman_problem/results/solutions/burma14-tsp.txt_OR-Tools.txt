@@ -1,0 +1,22 @@
+Instance: burma14-tsp.txt
+Solver: OR-Tools
+Status: Optimal
+Objective: 30.878503892587997
+Gap: 0
+Runtime: 0.7939424514770508
+
+Route:
+0 -> 9
+1 -> 0
+2 -> 13
+3 -> 2
+4 -> 3
+5 -> 4
+6 -> 11
+7 -> 12
+8 -> 10
+9 -> 8
+10 -> 7
+11 -> 5
+12 -> 6
+13 -> 1
