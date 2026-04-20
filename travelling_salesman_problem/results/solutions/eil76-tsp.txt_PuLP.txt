@@ -3,7 +3,7 @@ Solver: PuLP
 Status: Optimal
 Objective: 544.3690526708286
 Gap: 0
-Runtime: 668.7803821563721
+Runtime: 743.695182800293
 
 Route:
 0 -> 72

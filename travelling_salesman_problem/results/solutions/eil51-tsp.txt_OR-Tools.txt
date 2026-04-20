@@ -3,7 +3,7 @@ Solver: OR-Tools
 Status: Optimal
 Objective: 428.87175639203383
 Gap: 0
-Runtime: 3115.7290115356445
+Runtime: 3042.0483152866364
 
 Route:
 0 -> 21
